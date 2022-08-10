@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 
 import Statistics from './Statistics';
 import Section from './Section';
@@ -8,47 +8,45 @@ import { Container, Form } from './AppStyles';
 
 import Drops from './Drops';
 
-export class App extends Component {
-  state = {
-    good: 0,
-    neutral: 0,
-    bad: 0,
-  };
+export function App() {
 
-  sendFeedack = evt => {
-    const key = evt.currentTarget.textContent;
-    this.setState(preState => ({
-      [key]: preState[key] + 1,
-    }));
-  };
+    const [getFeedBacks, setFeedBacks] = useState({
+        good: 0,
+        neutral: 0,
+        bad: 0,
+    })
 
-  countTotalFeedback = () => Object.values(this.state).reduce((a, b) => a + b);
+    const sendFeedack = evt => {
+        const key = evt.currentTarget.textContent;
+        setFeedBacks({ ...getFeedBacks, [key]: getFeedBacks[key] + 1 });
+    };
 
-  countPositiveFeedbackPercentage = () =>
-    Math.round((this.state.good / this.countTotalFeedback()) * 100) || 0;
+    const countTotalFeedback = () => Object.values(getFeedBacks).reduce((a, b) => a + b);
 
-  render() {
-    return (
-      <Container>
+    const countPositiveFeedbackPercentage = () =>
+        Math.round((getFeedBacks.good / countTotalFeedback()) * 100) || 0;
+
+    // render() {
+    return <Container>
         <Form>
-          <Section title="Please leave feedback">
-            <FeedbackOptions
-              options={this.state}
-              onLeaveFeedback={this.sendFeedack}
-            />
-          </Section>
+            <Section title="Please leave feedback">
+                <FeedbackOptions
+                    options={getFeedBacks}
+                    onLeaveFeedback={sendFeedack}
+                />
+            </Section>
 
-          <Section title="Statistics">
-            <Statistics
-              {...this.state}
-              total={this.countTotalFeedback()}
-              positivePercentage={this.countPositiveFeedbackPercentage()}
-            />
-          </Section>
+            <Section title="Statistics">
+                <Statistics
+                    {...getFeedBacks}
+                    total={countTotalFeedback()}
+                    positivePercentage={countPositiveFeedbackPercentage()}
+                />
+            </Section>
         </Form>
         {/* decoration part */}
         <Drops />
-      </Container>
-    );
-  }
+    </Container>
+
+    // }
 }
