@@ -10,35 +10,55 @@ import Drops from './Drops';
 
 export function App() {
 
-    const [getFeedBacks, setFeedBacks] = useState({
-        good: 0,
-        neutral: 0,
-        bad: 0,
-    })
+    // const [getFeedBacks, setFeedBacks] = useState({
+    //     good: 0,
+    //     neutral: 0,
+    //     bad: 0,
+    // })
 
-    const sendFeedack = evt => {
+    const [getGoodFB, setGoodFB] = useState(0);
+    const [getNeutralFB, setNeutralFB] = useState(0);
+    const [getBadFB, setBadFB] = useState(0);
+
+    const sendFeedback = evt => {
         const key = evt.currentTarget.textContent;
-        setFeedBacks({ ...getFeedBacks, [key]: getFeedBacks[key] + 1 });
+        switch (key) {
+            case 'good':
+                setGoodFB(getGoodFB + 1);
+                break;
+            case 'neutral':
+                setNeutralFB(getNeutralFB + 1);
+                break;
+            case 'bad':
+                setBadFB(getBadFB + 1);
+                break;
+
+            default:
+                break;
+        }
+        // setFeedBacks({ ...getFeedBacks, [key]: getFeedBacks[key] + 1 });
     };
 
-    const countTotalFeedback = () => Object.values(getFeedBacks).reduce((a, b) => a + b);
+    const getAllFeedBacks = () => ({ good: getGoodFB, neutral: getNeutralFB, bad: getBadFB, })
+
+    const countTotalFeedback = () => Object.values(getAllFeedBacks()).reduce((a, b) => a + b);
 
     const countPositiveFeedbackPercentage = () =>
-        Math.round((getFeedBacks.good / countTotalFeedback()) * 100) || 0;
+        Math.round((getGoodFB.good / countTotalFeedback()) * 100) || 0;
 
     // render() {
     return <Container>
         <Form>
             <Section title="Please leave feedback">
                 <FeedbackOptions
-                    options={getFeedBacks}
-                    onLeaveFeedback={sendFeedack}
+                    options={getAllFeedBacks()}
+                    onLeaveFeedback={sendFeedback}
                 />
             </Section>
 
             <Section title="Statistics">
                 <Statistics
-                    {...getFeedBacks}
+                    {...getAllFeedBacks()}
                     total={countTotalFeedback()}
                     positivePercentage={countPositiveFeedbackPercentage()}
                 />
