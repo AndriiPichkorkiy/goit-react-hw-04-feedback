@@ -36,31 +36,30 @@ export function App() {
             default:
                 break;
         }
-        // setFeedBacks({ ...getFeedBacks, [key]: getFeedBacks[key] + 1 });
     };
 
-    const getAllFeedBacks = () => ({ good: getGoodFB, neutral: getNeutralFB, bad: getBadFB, })
+    const getAllFeedBacks = { good: getGoodFB, neutral: getNeutralFB, bad: getBadFB, }
 
-    const countTotalFeedback = () => Object.values(getAllFeedBacks()).reduce((a, b) => a + b);
+    const countTotalFeedback = Object.values(getAllFeedBacks).reduce((a, b) => a + b);
 
-    const countPositiveFeedbackPercentage = () =>
-        Math.round((getGoodFB.good / countTotalFeedback()) * 100) || 0;
+    const countPositiveFeedbackPercentage =
+        Math.round((getGoodFB / countTotalFeedback) * 100) || 0;
 
     // render() {
     return <Container>
         <Form>
             <Section title="Please leave feedback">
                 <FeedbackOptions
-                    options={getAllFeedBacks()}
+                    options={getAllFeedBacks}
                     onLeaveFeedback={sendFeedback}
                 />
             </Section>
 
             <Section title="Statistics">
                 <Statistics
-                    {...getAllFeedBacks()}
-                    total={countTotalFeedback()}
-                    positivePercentage={countPositiveFeedbackPercentage()}
+                    {...getAllFeedBacks}
+                    total={countTotalFeedback}
+                    positivePercentage={countPositiveFeedbackPercentage}
                 />
             </Section>
         </Form>
